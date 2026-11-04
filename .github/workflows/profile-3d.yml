@@ -9,11 +9,11 @@ jobs:
   generate:
     runs-on: ubuntu-latest
     steps:
-      - uses: yoshi389111/github-profile-3d-contrib@v0.9.3
+      - uses: yoshi389111/github-profile-3d-contrib@7d95e7d4cdc028dd1e1cbd957d65f35efb12ae39 # v0.9.3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           USERNAME: ${{ github.repository_owner }}
-      - uses: crazy-max/ghaction-github-pages@v4
+      - uses: crazy-max/ghaction-github-pages@df5cc2bfa78282ded844b354faee141f06b41865 # v4.2.0
         with:
           target_branch: output
           build_dir: profile-3d-contrib
