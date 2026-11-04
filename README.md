@@ -15,7 +15,4 @@
   <img src="https://streak-stats.demolab.com?user=Andkaiz7&theme=tokyonight&hide_border=true&dates=00000000" />
 </p>
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Andkaiz7/Andkaiz7/output/github-snake-dark.svg" />
-  <img src="https://raw.githubusercontent.com/Andkaiz7/Andkaiz7/output/github-snake.svg" />
-</picture>
+<img src="https://raw.githubusercontent.com/Andkaiz7/Andkaiz7/output/profile-night-view.svg" width="100%" />
