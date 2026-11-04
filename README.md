@@ -10,14 +10,9 @@
 - AI: LLM integrations, computer vision, document analysis
 - Tools: Python, FastAPI, OpenCV
 
-### Tech stack
-<p align="left">
-  <img src="https://skillicons.dev/icons?i=react,nextjs,tailwind,nodejs,python,fastapi,opencv,redis,express,swift,git" />
-</p>
-
 ### Activity
 <p align="left">
-  <img src="https://streak-stats.demolab.com?user=Andkaiz7&theme=tokyonight&hide_border=true" />
+  <img src="https://streak-stats.demolab.com?user=Andkaiz7&theme=tokyonight&hide_border=true&dates=00000000" />
 </p>
 
 <picture>
