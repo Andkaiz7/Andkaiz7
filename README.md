@@ -1,18 +1,18 @@
 <img src="https://capsule-render.vercel.app/api?type=waving&color=0:1a1b27,100:7aa2f7&height=160&section=header&text=Andkaiz7&fontColor=ffffff&fontSize=50" width="100%"/>
 
 <p align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=22&pause=1000&color=7AA2F7&center=true&vCenter=true&width=520&lines=Full-Stack+Developer;AI+%E2%80%A2+FastAPI+%E2%80%A2+Next.js;Always+shipping+something" />
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=22&pause=1000&color=7AA2F7&center=true&vCenter=true&width=520&lines=Front-end+%26+AI+Developer;React+%E2%80%A2+Next.js+%E2%80%A2+Tailwind;Building+AI-powered+tools" />
 </p>
 
 ### About me
 - Front-End & AI developer building web apps and AI tools
-- Backend: Python, FastAPI, Celery, Redis
-- Frontend: React, Next.js, Tailwind
-- Currently: AI document analysis and computer vision
+- Front-end: React, Next.js, Tailwind
+- AI: LLM integrations, computer vision, document analysis
+- Tools: Python, FastAPI, OpenCV
 
 ### Tech stack
 <p align="left">
-  <img src="https://skillicons.dev/icons?i=python,fastapi,react,nextjs,tailwind,nodejs,express,redis,opencv,swift,git" />
+  <img src="https://skillicons.dev/icons?i=react,nextjs,tailwind,nodejs,python,fastapi,opencv,redis,express,swift,git" />
 </p>
 
 ### Activity
