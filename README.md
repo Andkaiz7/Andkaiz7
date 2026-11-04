@@ -5,7 +5,7 @@
 </p>
 
 ### About me
-- Full-stack developer building web apps and AI tools
+- Front-End & AI developer building web apps and AI tools
 - Backend: Python, FastAPI, Celery, Redis
 - Frontend: React, Next.js, Tailwind
 - Currently: AI document analysis and computer vision
