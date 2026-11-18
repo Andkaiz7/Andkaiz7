@@ -53,33 +53,44 @@ def current_streak(counts):
     return n
 
 
-def ring(days, cx, cy, r0, L):
-    counts = [d["contributionCount"] for d in days]
-    n, mx = len(days), max(counts, default=0) or 1
-    bars = []
-    for i, d in enumerate(days):
-        ang = -math.pi / 2 + 2 * math.pi * i / n
-        c = d["contributionCount"]
-        ln = 4 + (L - 4) * math.sqrt(c / mx) if c else 2.5
-        ca, sa = math.cos(ang), math.sin(ang)
-        p = f'x1="{f(cx + r0 * ca)}" y1="{f(cy + r0 * sa)}" x2="{f(cx + (r0 + ln) * ca)}" y2="{f(cy + (r0 + ln) * sa)}"'
-        if not c:
-            bars.append(f'<line {p} stroke="{COLORS[0]}"/>')
-            continue
-        lvl = max(LEVELS.get(d["contributionLevel"], 0), 1)
-        a = i / n
-        pre, post = max(0.001, a - 0.004), min(0.999, a + 0.05)
-        bars.append(f'<line {p} stroke="{COLORS[lvl]}"><animate attributeName="stroke" dur="{T}s" repeatCount="indefinite" '
-                    f'values="{COLORS[lvl]};{COLORS[lvl]};#eef3fa;{COLORS[lvl]};{COLORS[lvl]}" keyTimes="0;{f(pre)};{f(min(a + 0.002, 0.998))};{f(post)};1"/></line>')
-    rs = r0 + L + 4
+def arc(cx, cy, r1, r2, a0, a1):
+    p = lambda r, a: f"{f(cx + r * math.sin(a))} {f(cy - r * math.cos(a))}"
+    return f"M{p(r2, a0)} A{f(r2)} {f(r2)} 0 0 1 {p(r2, a1)} L{p(r1, a1)} A{f(r1)} {f(r1)} 0 0 0 {p(r1, a0)} Z"
+
+
+def ring(weeks, cx, cy):
+    r_in, band, gap_r = 50, 9, 1.6
+    gap_deg = 14
+    n = len(weeks)
+    span = math.radians(360 - gap_deg)
+    start = math.radians(gap_deg / 2)
+    step = span / n
+    cells = []
+    for wi, w in enumerate(weeks):
+        a0 = start + wi * step + 0.006
+        a1 = start + (wi + 1) * step - 0.006
+        a = (a0 + a1) / 2 / (2 * math.pi)
+        for d in w["contributionDays"]:
+            r1 = r_in + d["weekday"] * (band + gap_r)
+            path = arc(cx, cy, r1, r1 + band, a0, a1)
+            lvl = LEVELS.get(d["contributionLevel"], 0) if d["contributionCount"] else 0
+            if not lvl:
+                cells.append(f'<path d="{path}" fill="{COLORS[0]}"/>')
+                continue
+            c = COLORS[lvl]
+            pre, post = max(0.001, a - 0.006), min(0.999, a + 0.05)
+            cells.append(f'<path d="{path}" fill="{c}"><animate attributeName="fill" dur="{T}s" repeatCount="indefinite" '
+                         f'values="{c};{c};#eef3fa;{c};{c}" keyTimes="0;{f(pre)};{f(min(a + 0.003, 0.998))};{f(post)};1"/></path>')
+    r_out = r_in + 7 * band + 6 * gap_r
+    rs = r_out + 5
     sweep = (f'<g><animateTransform attributeName="transform" type="rotate" from="0 {cx} {cy}" to="360 {cx} {cy}" dur="{T}s" repeatCount="indefinite"/>'
-             f'<path d="M{cx} {cy} L{cx} {cy - rs} A{rs} {rs} 0 0 0 {f(cx - rs * math.sin(math.radians(24)))} {f(cy - rs * math.cos(math.radians(24)))} Z" fill="url(#sweep)"/>'
-             f'<line x1="{cx}" y1="{cy - r0 + 6}" x2="{cx}" y2="{cy - rs}" stroke="#8fb4e0" stroke-opacity="0.55"/></g>')
-    active = sum(1 for c in counts if c)
-    return (f'<circle cx="{cx}" cy="{cy}" r="{r0 - 8}" fill="none" stroke="{BORDER}"/>{sweep}'
-            f'<g stroke-width="2" stroke-linecap="round">{"".join(bars)}</g>'
+             f'<path d="{arc(cx, cy, r_in - 5, rs, -math.radians(26), 0)}" fill="url(#sweep)"/>'
+             f'<line x1="{cx}" y1="{cy - r_in + 5}" x2="{cx}" y2="{cy - rs}" stroke="#8fb4e0" stroke-opacity="0.55"/></g>')
+    days = [d for w in weeks for d in w["contributionDays"]]
+    active = sum(1 for d in days if d["contributionCount"])
+    return (f'{"".join(cells)}{sweep}'
             f'<text x="{cx}" y="{cy + 4}" text-anchor="middle" font-family="{SANS}" font-size="24" font-weight="700" fill="url(#num)">{active:,}</text>'
-            f'<text x="{cx}" y="{cy + 21}" text-anchor="middle" font-family="{MONO}" font-size="10" fill="{MUTED}">active days</text>')
+            f'<text x="{cx}" y="{cy + 20}" text-anchor="middle" font-family="{MONO}" font-size="10" fill="{MUTED}">active days</text>')
 
 
 def render(cal):
@@ -88,15 +99,15 @@ def render(cal):
     total = cal["totalContributions"]
     cur, best = current_streak(counts), longest_streak(counts)
 
-    h, ly = 280, 190
-    sx, sy, sr = 405, 108, 44
+    h, ly = 300, 200
+    sx, sy, sr = 405, 118, 44
     circ = 2 * math.pi * sr
     gap = 30
     flame = (f'<g transform="translate({sx} {sy - sr})"><path d="M0 -13 C7 -6 9 -1 7 5 C5 10 -5 10 -7 5 C-9 0 -4 -4 0 -13 Z" fill="{HI}"/>'
              f'<path d="M0 -3 C3 0 4 3 2 6 C1 8 -2 8 -3 6 C-4 3 -2 1 0 -3 Z" fill="{BG}"/></g>')
 
     def stat(x, num, label):
-        return (f'<text x="{x}" y="123" text-anchor="middle" font-family="{SANS}" font-size="42" font-weight="700" fill="url(#num)">{num}</text>'
+        return (f'<text x="{x}" y="133" text-anchor="middle" font-family="{SANS}" font-size="42" font-weight="700" fill="url(#num)">{num}</text>'
                 f'<text x="{x}" y="{ly}" text-anchor="middle" font-family="{SANS}" font-size="15" fill="{SUB}">{label}</text>')
 
     return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 {h}" width="1200" height="{h}" role="img" aria-label="{total:,} contributions, current streak {cur}, longest streak {best}">
@@ -108,16 +119,16 @@ def render(cal):
 <rect width="1200" height="{h}" rx="18" fill="{BG}"/>
 <rect width="1200" height="{h}" rx="18" fill="url(#dots)"/>
 <rect x="0.5" y="0.5" width="1199" height="{h - 1}" rx="18" fill="none" stroke="{BORDER}"/>
-<g stroke="{BORDER}">{"".join(f'<line x1="{x}" y1="56" x2="{x}" y2="224"/>' for x in (270, 540, 810))}</g>
+<g stroke="{BORDER}">{"".join(f'<line x1="{x}" y1="66" x2="{x}" y2="234"/>' for x in (270, 540, 810))}</g>
 {stat(135, f"{total:,}", "Total Contributions")}
-<text x="135" y="212" text-anchor="middle" font-family="{MONO}" font-size="11" fill="{MUTED}">last 12 months</text>
+<text x="135" y="222" text-anchor="middle" font-family="{MONO}" font-size="11" fill="{MUTED}">last 12 months</text>
 <circle cx="{sx}" cy="{sy}" r="{sr}" fill="none" stroke="#6f97c4" stroke-width="5" stroke-linecap="round" transform="rotate(-90 {sx} {sy})"
   stroke-dasharray="{f(circ - gap)} {gap}" stroke-dashoffset="{f(circ - gap / 2)}"/>
 {flame}
 <text x="{sx}" y="{sy + 11}" text-anchor="middle" font-family="{SANS}" font-size="32" font-weight="700" fill="#eef3fa">{cur:,}</text>
 <text x="{sx}" y="{ly}" text-anchor="middle" font-family="{SANS}" font-size="15" font-weight="700" fill="{SUB}">Current Streak</text>
 {stat(675, f"{best:,}", "Longest Streak")}
-{ring(days, 1005, 140, 62, 50)}
+{ring(cal["weeks"], 1005, h / 2)}
 </svg>
 """
 
