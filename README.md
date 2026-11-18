@@ -22,6 +22,6 @@ class Andkaiz7(nn.Module):
   <img src="https://streak-stats.demolab.com?user=Andkaiz7&hide_border=true&dates=00000000&background=0D1117&stroke=1D2533&ring=6F97C4&fire=B4CDEA&currStreakNum=EEF3FA&currStreakLabel=A9C2E0&sideNums=A9C2E0&sideLabels=8B949E" alt="GitHub streak" />
 </p>
 
-<img src="https://raw.githubusercontent.com/Andkaiz7/Andkaiz7/output/profile-customize.svg" alt="3D contribution graph" width="100%" />
+<img src="https://raw.githubusercontent.com/Andkaiz7/Andkaiz7/output/neural-contrib.svg" alt="Contribution activity" width="100%" />
 
 <img src="./assets/neural-footer.svg" alt="" width="100%"/>
